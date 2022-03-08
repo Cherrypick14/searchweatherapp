@@ -23,7 +23,7 @@ export default function Searchweather() {
       }
     };
     fetchWeatherStatus();
-  }, []);
+  }, [search]);
 
   let emojisky = null;
   if (typeof data.main != undefined) {
@@ -48,6 +48,24 @@ export default function Searchweather() {
   let temp_min = (data.main.temp_min - 275.15).toFixed(2);
   let temp_max = (data.main.temp_max - 275.15).toFixed(2);
 
+  //Date
+  let d = new Date();
+  let date = d.getDate();
+  let year = d.getFullYear();
+  let month = d.toLocalString("default", {month: "long"});
+  let day = d.toLocalString("default", {weekday: "long"});
+  
+  //Time
+    let time = d.toLocalString([], {
+        hour: '2 digits',
+        min: '2 digits',
+        sec: '2 digits'
+    });
+const handleSubmit =(e)=>{
+    e.preventDefault();
+    setSearch(input);
+}
+
   return (
     <div>
       <div className="container mt-5">
@@ -55,12 +73,12 @@ export default function Searchweather() {
           <div className="col-md-4">
             <div className="card text-center text-white border-0">
               <img
-                src="https://source.unsplash.com/random/620x1080/?wallpaper,landscape"
+                src={`https://source.unsplash.com/random/620x1080/?${data.weather[0].main}`}
                 class="card-img"
                 alt="..."
               />
               <div class="card-img-overlay">
-                <form action="">
+                <form onSubmit ={handleSubmit}>
                   <div class="input-group mb-4 w-75 mx-auto ">
                     <input
                       type="search"
@@ -68,6 +86,10 @@ export default function Searchweather() {
                       placeholder="Search City..."
                       aria-label="Search City"
                       aria-describedby="basic-addon2"
+                      name ="search"
+                      value ={input}
+                      onChange={(e)=>{setInput(e.target.value)}}
+                      required
                     />
                     <button
                       type="submit"
@@ -81,7 +103,10 @@ export default function Searchweather() {
 
                 <div className="bg-dark bg-opacity-50 py-3">
                   <h2 class="card-title">{data.name}</h2>
-                  <p class="card-text lead">Tuesday, March 1 2022</p>
+                  <p class="card-text lead">{day}, {month} {date}, {year}
+                  <br/>
+                  {time}
+                  </p>
                   <hr />
                   <i className={`fas ${emojisky} fa-4x`}></i>
                   <h1 className="fw-bolder mb-4">{temp}&deg;C</h1>
